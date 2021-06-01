@@ -1,5 +1,5 @@
 #include <led.h>
-#include <spi.h>
+#include <lora.h>
 #include <timer.h>
 
 #include <stdio.h>
@@ -27,7 +27,7 @@ static void write_cb(__attribute__ ((unused)) int arg0,
 
 // char digits[] = "012345\r\n";
 char buf[] = "A\r\n";
-char read_write[] = "read_write return code\r\n";
+char syscall_return[] = "syscall return code\r\n";
 
 
 #define BUF_SIZE 16
@@ -48,10 +48,9 @@ int main(void) {
 
   for (i = 0; ; i++) {
     led_off(0);
-    return_code = spi_read_write(wbuf, rbuf, BUF_SIZE, write_cb, NULL);
+    return_code = lora_set_tx_data(wbuf, BUF_SIZE);
     // return_code = spi_write_byte((unsigned char)i & 0xff); // NOTE: NOT supported by Tock capsules/src/spi_controller.rs
-    putnstr_async(read_write, strlen(read_write), nop, NULL);
-    // TODO: Use tock_strrcode() to convert return code into string and print
+    putnstr_async(syscall_return, strlen(syscall_return), nop, NULL);
     buf[0] = return_code + '1';
     putnstr_async(buf, strlen(buf), nop, NULL);
     delay_ms(25);
