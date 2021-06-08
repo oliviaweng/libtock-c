@@ -25,11 +25,6 @@ static void write_cb(__attribute__ ((unused)) int arg0,
 }
 
 
-// char digits[] = "012345\r\n";
-char buf[] = "A\r\n";
-char syscall_return[] = "syscall return code\r\n";
-
-
 #define BUF_SIZE 16
 char rbuf[BUF_SIZE];
 char wbuf[BUF_SIZE];
@@ -46,19 +41,18 @@ int main(void) {
   // NOTE: No need to chip select since it just relies on the hardcoded chip select
   // return_code = spi_set_chip_select(1);
 
-  for (i = 0; ; i++) {
-    led_off(0);
-    return_code = lora_set_tx_data(wbuf, BUF_SIZE);
-    // return_code = spi_write_byte((unsigned char)i & 0xff); // NOTE: NOT supported by Tock capsules/src/spi_controller.rs
-    putnstr_async(syscall_return, strlen(syscall_return), nop, NULL);
-    buf[0] = return_code + '1';
-    putnstr_async(buf, strlen(buf), nop, NULL);
-    delay_ms(25);
+  // for (i = 0; ; i++) {
+  printf("loop\n");
+  led_off(0);
+  return_code = lora_set_tx_data(wbuf, BUF_SIZE);
+  // return_code = spi_write_byte((unsigned char)i & 0xff); // NOTE: NOT supported by Tock capsules/src/spi_controller.rs
+  printf("syscall return code: %d\n", return_code);
+  delay_ms(25);
 
-    led_on(0);
+  led_on(0);
 
-    delay_ms(25);
-  }
+  delay_ms(25);
+  // }
 
   return 0;
 }

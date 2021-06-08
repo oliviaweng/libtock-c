@@ -1,6 +1,6 @@
 #include "lora.h"
 
-
+// TODO: If we are using I2C, len needs to be of type uint8_t
 int lora_set_tx_data(const char* buf, size_t len) {
     // TODO: Add callback subscribe stuff
     allow_ro_return_t aval = allow_readonly(DRIVER_NUM_LORA, 0, buf, len);
