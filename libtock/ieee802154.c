@@ -1,5 +1,5 @@
 #include "ieee802154.h"
-#include "timer.h"
+#include "timer.h" 
 
 const int RADIO_DRIVER = 0x30001;
 
@@ -389,14 +389,15 @@ int ieee802154_send(unsigned short addr,
   // Subscribe to the transmit callback
   bool tx_done = false;
   subscribe_return_t sub = subscribe(RADIO_DRIVER, SUBSCRIBE_TX,
-                                     tx_done_callback, (void *) &tx_done);
+                                    tx_done_callback, (void *) &tx_done);
   if (!sub.success) return tock_status_to_returncode(sub.status);
+
+  
 
   // Issue the send command and wait for the transmission to be done.
   syscall_return_t com = command(RADIO_DRIVER, COMMAND_SEND, (unsigned int) addr, 0);
   int ret = tock_command_return_novalue_to_returncode(com);
   if (ret < 0) return ret;
-
   yield_for(&tx_done);
   if (tx_result != RETURNCODE_SUCCESS) {
     return tx_result;
@@ -427,7 +428,7 @@ int ieee802154_receive_sync(const char *frame, unsigned char len) {
   if (!sub.success) return tock_status_to_returncode(sub.status);
 
   // Wait for a frame
-  yield_for(&rx_done);
+  yield_for(&rx_done); 
   return RETURNCODE_SUCCESS;
 }
 
@@ -445,6 +446,14 @@ int ieee802154_receive(subscribe_upcall callback,
   if (!rw.success) return tock_status_to_returncode(rw.status);
 
   subscribe_return_t sub = subscribe(RADIO_DRIVER, SUBSCRIBE_RX, callback, NULL);
+  return tock_subscribe_return_to_returncode(sub);
+}
+
+int ieee802154_unsubscribe(void) {
+  // Provide the buffer to the kernel
+  //allow_rw_return_t rw = allow_readwrite(RADIO_DRIVER, ALLOW_RX, (void *) frame, len);
+  //if (!rw.success) return tock_status_to_returncode(rw.status);
+  subscribe_return_t sub = subscribe(RADIO_DRIVER, SUBSCRIBE_RX, NULL, NULL);
   return tock_subscribe_return_to_returncode(sub);
 }
 

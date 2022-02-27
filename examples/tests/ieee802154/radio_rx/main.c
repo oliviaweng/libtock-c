@@ -92,9 +92,26 @@ int main(void) {
   ieee802154_set_address(0x802);
   ieee802154_set_pan(0xABCD);
   ieee802154_config_commit();
-  ieee802154_up();
+  //ieee802154_up();
+
+  //JWINK -> Receive periodically
+  
+  while(1) {
+    printf("Subscribing to radio\n");
+      ieee802154_receive(callback, packet_rx, IEEE802154_FRAME_LEN);
+      delay_ms(4000);
+      printf("Unsubscribing to radio\n");
+      ieee802154_unsubscribe();
+      delay_ms(4000);
+  }
+
+  
+  //JWINK -> Receive forever
+  /*
+  printf("Subscribing to radio\n");
   ieee802154_receive(callback, packet_rx, IEEE802154_FRAME_LEN);
   while (1) {
     delay_ms(4000);
-  }
+  }*/
+  
 }

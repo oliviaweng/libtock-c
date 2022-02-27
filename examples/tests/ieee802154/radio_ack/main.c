@@ -15,14 +15,13 @@ bool toggle = true;
 
 int main(void) {
   int i;
-  char counter = 0;
   for (i = 0; i < BUF_SIZE; i++) {
     packet_tx[i] = i;
   }
   ieee802154_set_address(0x1540);
   ieee802154_set_pan(0xABCD);
   ieee802154_config_commit();
-  ieee802154_up();
+  //ieee802154_up();
   while (1) {
     int err = ieee802154_send(0x0802,
                               SEC_LEVEL_NONE,
@@ -31,15 +30,12 @@ int main(void) {
                               packet_tx,
                               BUF_SIZE);
     if (err == RETURNCODE_SUCCESS) {
-      led_toggle(0);
       printf("Packet sent and acked.\n");
     } else if (err == RETURNCODE_ENOACK) {
       printf("Packet sent, but not acked.\n");
     } else {
       printf("Failed to send packet.\n");
     }
-    counter++;
-    packet_tx[0] = counter;
     delay_ms(4000);
   }
 }

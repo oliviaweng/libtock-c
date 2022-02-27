@@ -21,6 +21,8 @@ int ieee802154_down(void);
 // Returns true if the 802.15.4 radio is up.
 bool ieee802154_is_up(void);
 
+int ieee802154_unsubscribe(void);
+
 // IEEE 802.15.4 device configuration interface. After any calls to
 // ieee_802154_set_*, ieee802154_config_commit must be called at least once.
 // Otherwise, it is not guaranteed that the configuration will reach the underlying
